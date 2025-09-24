@@ -1,0 +1,843 @@
+.share-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .share-btn {
+            background: linear-gradient(135deg, #1976d2, #1565c0);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 0.9rem;
+        }<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategia 2030 - Simulatore Sostenibilità</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2E7D32, #4CAF50);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+        }
+
+        .scenario {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 1.1rem;
+            line-height: 1.4;
+        }
+
+        .dashboard {
+            background: #f8f9fa;
+            padding: 30px;
+            border-bottom: 3px solid #e9ecef;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .dashboard-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .dashboard-card h3 {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .dashboard-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .budget { color: #2196F3; }
+        .emissions { color: #4CAF50; }
+        .target { color: #FF5722; }
+        .status { color: #9C27B0; }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            transition: width 0.8s ease;
+            border-radius: 10px;
+        }
+
+        .progress-fill.danger {
+            background: linear-gradient(90deg, #f44336, #FF5722);
+        }
+
+        .game-area {
+            padding: 40px;
+        }
+
+        .category {
+            margin-bottom: 40px;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .category-header {
+            background: linear-gradient(135deg, #673AB7, #9C27B0);
+            color: white;
+            padding: 20px 30px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 0;
+        }
+
+        .option {
+            padding: 25px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            border-bottom: 1px solid #e0e0e0;
+            border-right: 1px solid #e0e0e0;
+        }
+
+        .option:hover {
+            background: #f8f9fa;
+            transform: translateY(-2px);
+        }
+
+        .option.selected {
+            background: #e8f5e8;
+            border-color: #4CAF50;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.2);
+        }
+
+        .option-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .option-title {
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .option-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .stat.cost {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .stat.emissions {
+            background: #e8f5e8;
+            color: #388e3c;
+        }
+
+        .stat.emissions.negative {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+
+        .stat.extra {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .controls {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            min-width: 150px;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn:disabled {
+            background: #bdbdbd;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn.secondary {
+            background: linear-gradient(135deg, #757575, #616161);
+        }
+
+        .feedback {
+            margin: 30px 0;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 1.1rem;
+            display: none;
+        }
+
+        .feedback.success {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+            border: 2px solid #4CAF50;
+        }
+
+        .feedback.warning {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            color: #856404;
+            border: 2px solid #ffc107;
+        }
+
+        .feedback.error {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        .badge {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            margin: 30px 0;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border-radius: 20px;
+            color: #333;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .badge h3 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .badge.show {
+            display: block;
+            animation: bounceIn 1.2s ease;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            50% { transform: scale(1.2) rotate(-10deg); opacity: 0.8; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        .suggestions {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #2196F3;
+        }
+
+        .suggestions h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+
+        .alert.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffc107;
+        }
+
+        .alert.danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #dc3545;
+        }
+
+        .share-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .share-btn {
+            background: linear-gradient(135deg, #1976d2, #1565c0);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2rem; }
+            .game-area { padding: 20px; }
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .options-grid { grid-template-columns: 1fr; }
+            .option-stats { grid-template-columns: 1fr; gap: 5px; }
+            .controls { margin: 20px 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Strategia 2030</h1>
+            <p style="font-size: 1.2rem; margin-bottom: 10px;">Simulatore Accordo di Parigi</p>
+            <div class="scenario">
+                <strong>🏢 Scenario:</strong> Sei il responsabile sostenibilità di un'azienda. 
+                Hai un <strong>budget di 100 punti</strong> e devi ridurre le emissioni del 
+                <strong>43% entro il 2030</strong> (obiettivo Accordo di Parigi). 
+                Ogni scelta ha costi, benefici e rischi diversi. Scegli saggiamente!
+            </div>
+        </div>
+
+        <div class="dashboard">
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <h3>💰 Budget Rimasto</h3>
+                    <div class="dashboard-value budget" id="budgetValue">100</div>
+                    <div>/100 punti</div>
+                </div>
+                <div class="dashboard-card">
+                    <h3>📊 Riduzione Emissioni</h3>
+                    <div class="dashboard-value emissions" id="emissionsValue">0%</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="emissionsProgress"></div>
+                    </div>
+                </div>
+                <div class="dashboard-card">
+                    <h3>🎯 Obiettivo Parigi</h3>
+                    <div class="dashboard-value target">-43%</div>
+                    <div>entro 2030</div>
+                </div>
+                <div class="dashboard-card">
+                    <h3>⚡ Status</h3>
+                    <div class="dashboard-value status" id="statusValue">IN CORSO</div>
+                    <div id="statusText">Seleziona le opzioni</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-area">
+            <div id="alertsContainer"></div>
+
+            <!-- ENERGIA -->
+            <div class="category">
+                <div class="category-header">
+                    ⚡ ENERGIA - Scegli la tua fonte energetica
+                </div>
+                <div class="options-grid">
+                    <div class="option" data-category="energy" data-cost="10" data-emissions="20" data-extra="Alto Rischio" data-analysis="Economico ma altamente inquinante. Rischi normativi futuri e costi crescenti del carbonio.">
+                        <span class="option-icon">🔥</span>
+                        <div class="option-title">Carbone</div>
+                        <p>Fonte energetica tradizionale a basso costo iniziale</p>
+                    </div>
+                    <div class="option" data-category="energy" data-cost="20" data-emissions="10" data-extra="Rischio Medio" data-analysis="Soluzione di transizione. Meno inquinante del carbone ma ancora basata su combustibili fossili con volatilità dei prezzi.">
+                        <span class="option-icon">⚡</span>
+                        <div class="option-title">Gas Naturale</div>
+                        <p>Combustibile più pulito per la transizione energetica</p>
+                    </div>
+                    <div class="option" data-category="energy" data-cost="40" data-emissions="-30" data-extra="Rischio Basso" data-analysis="Investimento alto iniziale ma energia pulita garantita per 25+ anni con costi operativi quasi nulli e indipendenza energetica.">
+                        <span class="option-icon">🌞</span>
+                        <div class="option-title">Solare</div>
+                        <p>Pannelli fotovoltaici per autosufficienza energetica</p>
+                    </div>
+                    <div class="option" data-category="energy" data-cost="35" data-emissions="-25" data-extra="Efficienza 90%" data-analysis="Ottimo rapporto costi-benefici con tecnologia matura. Dipende dalle condizioni climatiche ma garantisce energia pulita stabile.">
+                        <span class="option-icon">💨</span>
+                        <div class="option-title">Eolico</div>
+                        <p>Contratti con parchi eolici per energia rinnovabile</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TRASPORTI -->
+            <div class="category">
+                <div class="category-header">
+                    🚛 TRASPORTI - Scegli la tua flotta
+                </div>
+                <div class="options-grid">
+                    <div class="option" data-category="transport" data-cost="15" data-emissions="15" data-extra="Efficienza 60%" data-analysis="Soluzione tradizionale con bassi costi iniziali ma alte emissioni, inefficienza nei consumi e costi crescenti del carburante.">
+                        <span class="option-icon">🚚</span>
+                        <div class="option-title">Flotta Diesel</div>
+                        <p>Veicoli commerciali tradizionali a gasolio</p>
+                    </div>
+                    <div class="option" data-category="transport" data-cost="25" data-emissions="5" data-extra="Efficienza 80%" data-analysis="Compromesso ragionevole con emissioni ridotte del 70% e maggiore efficienza. Costi moderati ma ancora dipendenza parziale dai combustibili.">
+                        <span class="option-icon">🚐</span>
+                        <div class="option-title">Flotta Ibrida</div>
+                        <p>Veicoli con doppia alimentazione elettrica-termica</p>
+                    </div>
+                    <div class="option" data-category="transport" data-cost="45" data-emissions="-20" data-extra="Efficienza 95%" data-analysis="Investimento importante ma zero emissioni dirette, massima efficienza energetica e costi operativi minimi. Futuro della mobilità commerciale.">
+                        <span class="option-icon">⚡</span>
+                        <div class="option-title">Flotta Elettrica</div>
+                        <p>Veicoli completamente elettrici a zero emissioni</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRODUZIONE -->
+            <div class="category">
+                <div class="category-header">
+                    🏭 PRODUZIONE - Scegli il tuo modello
+                </div>
+                <div class="options-grid">
+                    <div class="option" data-category="production" data-cost="20" data-emissions="25" data-extra="Qualità Standard" data-analysis="Approccio classico lineare (prendi-produci-butta) con costi contenuti ma alto impatto ambientale e dipendenza da materie prime vergini.">
+                        <span class="option-icon">🏭</span>
+                        <div class="option-title">Tradizionale</div>
+                        <p>Produzione lineare con processi consolidati</p>
+                    </div>
+                    <div class="option" data-category="production" data-cost="50" data-emissions="-35" data-extra="Qualità Premium" data-analysis="Riuso, riciclo e rigenerazione dei materiali. Investimento alto ma impatto ambientale positivo, indipendenza dalle materie prime e qualità premium.">
+                        <span class="option-icon">♻️</span>
+                        <div class="option-title">Economia Circolare</div>
+                        <p>Modello rigenerativo che elimina i rifiuti</p>
+                    </div>
+                    <div class="option" data-category="production" data-cost="60" data-emissions="-40" data-extra="Eccellenza" data-analysis="AI, automazione e sostenibilità integrate. Massimo investimento iniziale ma massimi benefici: efficienza estrema, qualità eccellente e zero sprechi.">
+                        <span class="option-icon">🤖</span>
+                        <div class="option-title">Industria 4.0</div>
+                        <p>Produzione intelligente con AI e automazione</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="suggestions" id="suggestions" style="display: none;">
+                <h4>💡 Suggerimenti IA:</h4>
+                <p id="suggestionsText"></p>
+            </div>
+
+            <div class="controls">
+                <button class="btn" id="calculateBtn">📊 Calcola Risultato</button>
+                <button class="btn secondary" id="resetBtn">🔄 Ricomincia Strategia</button>
+            </div>
+
+            <div class="feedback" id="feedback"></div>
+            
+            <div class="badge" id="badge">
+                <h3 id="badgeTitle">🏆 Badge Ottenuto!</h3>
+                <p id="badgeText">Testo del badge</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class StrategySimulator {
+            constructor() {
+                this.budget = 100;
+                this.totalEmissions = 0;
+                this.selections = {};
+                this.targetReduction = -43;
+                
+                this.initializeGame();
+            }
+
+            initializeGame() {
+                this.setupEventListeners();
+                this.updateDashboard();
+            }
+
+            setupEventListeners() {
+                const options = document.querySelectorAll('.option');
+                const calculateBtn = document.getElementById('calculateBtn');
+                const resetBtn = document.getElementById('resetBtn');
+
+                options.forEach(option => {
+                    option.addEventListener('click', this.handleOptionSelect.bind(this));
+                });
+
+                calculateBtn.addEventListener('click', this.calculateResults.bind(this));
+                resetBtn.addEventListener('click', this.resetGame.bind(this));
+            }
+
+            handleOptionSelect(e) {
+                const option = e.currentTarget;
+                const category = option.dataset.category;
+                const cost = parseInt(option.dataset.cost);
+                const emissions = parseInt(option.dataset.emissions);
+                
+                // Deseleziona altre opzioni della stessa categoria
+                document.querySelectorAll(`[data-category="${category}"]`).forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+
+                // Seleziona questa opzione
+                option.classList.add('selected');
+
+                // Salva la selezione
+                this.selections[category] = {
+                    cost: cost,
+                    emissions: emissions,
+                    title: option.querySelector('.option-title').textContent,
+                    icon: option.querySelector('.option-icon').textContent
+                };
+
+                this.updateDashboard();
+                this.checkBudget();
+                this.showSuggestions();
+            }
+
+            updateDashboard() {
+                let totalCost = 0;
+                let totalEmissions = 0;
+
+                Object.values(this.selections).forEach(selection => {
+                    totalCost += selection.cost;
+                    totalEmissions += selection.emissions;
+                });
+
+                const remainingBudget = this.budget - totalCost;
+                const emissionsPercent = Math.min(Math.max(totalEmissions, -50), 50);
+                
+                // Aggiorna i valori del dashboard
+                document.getElementById('budgetValue').textContent = remainingBudget;
+                document.getElementById('emissionsValue').textContent = `${totalEmissions > 0 ? '+' : ''}${totalEmissions}%`;
+                
+                // Aggiorna la barra di progresso
+                const progress = Math.abs(emissionsPercent) / 50 * 100;
+                const progressBar = document.getElementById('emissionsProgress');
+                progressBar.style.width = `${progress}%`;
+                progressBar.classList.toggle('danger', totalEmissions > 0);
+
+                // Aggiorna lo status
+                this.updateStatus(remainingBudget, totalEmissions);
+                
+                this.totalEmissions = totalEmissions;
+            }
+
+            updateStatus(budget, emissions) {
+                const statusValue = document.getElementById('statusValue');
+                const statusText = document.getElementById('statusText');
+
+                if (budget < 0) {
+                    statusValue.textContent = 'BUDGET SUPERATO';
+                    statusValue.style.color = '#f44336';
+                    statusText.textContent = 'Riduci i costi!';
+                } else if (emissions <= this.targetReduction) {
+                    statusValue.textContent = 'OBIETTIVO RAGGIUNTO';
+                    statusValue.style.color = '#4CAF50';
+                    statusText.textContent = 'Complimenti!';
+                } else if (Object.keys(this.selections).length === 3) {
+                    statusValue.textContent = 'PRONTO PER CALCOLO';
+                    statusValue.style.color = '#2196F3';
+                    statusText.textContent = 'Tutte le scelte fatte';
+                } else {
+                    statusValue.textContent = 'IN CORSO';
+                    statusValue.style.color = '#FF9800';
+                    statusText.textContent = `Mancano ${3 - Object.keys(this.selections).length} scelte`;
+                }
+            }
+
+            checkBudget() {
+                const totalCost = Object.values(this.selections).reduce((sum, sel) => sum + sel.cost, 0);
+                const alertsContainer = document.getElementById('alertsContainer');
+                
+                if (totalCost > this.budget) {
+                    alertsContainer.innerHTML = `
+                        <div class="alert danger">
+                            ⚠️ <strong>BUDGET SUPERATO!</strong> 
+                            Hai speso ${totalCost}/100 punti. Scegli opzioni meno costose.
+                        </div>`;
+                } else if (totalCost > 80) {
+                    alertsContainer.innerHTML = `
+                        <div class="alert warning">
+                            💰 <strong>Budget quasi esaurito:</strong> 
+                            ${100 - totalCost} punti rimanenti.
+                        </div>`;
+                } else {
+                    alertsContainer.innerHTML = '';
+                }
+            }
+
+            showSuggestions() {
+                if (Object.keys(this.selections).length < 2) return;
+
+                const suggestionsDiv = document.getElementById('suggestions');
+                const suggestionsText = document.getElementById('suggestionsText');
+                
+                let suggestions = [];
+                
+                if (this.totalEmissions > this.targetReduction) {
+                    suggestions.push("🌱 Prova opzioni più sostenibili per ridurre le emissioni");
+                }
+                
+                const totalCost = Object.values(this.selections).reduce((sum, sel) => sum + sel.cost, 0);
+                if (totalCost < 70) {
+                    suggestions.push("💡 Hai budget disponibile: considera investimenti in tecnologie avanzate");
+                }
+
+                if (this.totalEmissions <= -30) {
+                    suggestions.push("🎯 Ottimo! Sei sulla buona strada per superare gli obiettivi di Parigi");
+                }
+
+                if (suggestions.length > 0) {
+                    suggestionsText.textContent = suggestions.join(' • ');
+                    suggestionsDiv.style.display = 'block';
+                } else {
+                    suggestionsDiv.style.display = 'none';
+                }
+            }
+
+            calculateResults() {
+                if (Object.keys(this.selections).length < 3) {
+                    alert('Devi fare almeno una scelta per ogni categoria!');
+                    return;
+                }
+
+                const totalCost = Object.values(this.selections).reduce((sum, sel) => sum + sel.cost, 0);
+                
+                if (totalCost > this.budget) {
+                    this.showFeedback('error', 'Budget Superato', 
+                        `Hai speso ${totalCost}/100 punti. Il pianeta ha bisogno di scelte più economiche e sostenibili!`);
+                    return;
+                }
+
+                this.showResults();
+            }
+
+            showResults() {
+                const totalCost = Object.values(this.selections).reduce((sum, sel) => sum + sel.cost, 0);
+                
+                if (totalCost > this.budget) {
+                    this.showFeedback('error', 'Budget Superato', 
+                        `Hai speso ${totalCost}/100 punti. Il pianeta ha bisogno di scelte più economiche e sostenibili!`);
+                    return;
+                }
+
+                this.showDetailedResults();
+            }
+
+            showDetailedResults() {
+                const emissions = this.totalEmissions;
+                const totalCost = Object.values(this.selections).reduce((sum, sel) => sum + sel.cost, 0);
+                const feedback = document.getElementById('feedback');
+                
+                feedback.style.display = 'block';
+
+                // Crea il resoconto dettagliato delle scelte
+                let choicesDetail = '<div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: left;"><h4 style="color: #4CAF50; margin-bottom: 15px; text-align: center;">📋 Analisi delle Tue Scelte Strategiche</h4>';
+                
+                const categoryNames = {
+                    'energy': '⚡ ENERGIA',
+                    'transport': '🚛 TRASPORTI', 
+                    'production': '🏭 PRODUZIONE'
+                };
+
+                Object.entries(this.selections).forEach(([category, selection]) => {
+                    const selectedOption = document.querySelector(`[data-category="${category}"].selected`);
+                    const analysis = selectedOption ? selectedOption.dataset.analysis : '';
+                    
+                    choicesDetail += `
+                        <div style="margin: 15px 0; padding: 15px; background: white; border-radius: 8px; border-left: 4px solid #4CAF50;">
+                            <strong>${categoryNames[category]}: ${selection.title}</strong><br>
+                            <span style="color: #666; font-size: 0.9rem;">${analysis}</span><br>
+                            <div style="margin-top: 8px;">
+                                <span style="background: #e3f2fd; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; margin-right: 10px;">💰 Costo: ${selection.cost} punti</span>
+                                <span style="background: ${selection.emissions > 0 ? '#ffebee' : '#e8f5e8'}; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">📊 Emissioni: ${selection.emissions > 0 ? '+' : ''}${selection.emissions}%</span>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                choicesDetail += '</div>';
+
+                if (emissions <= this.targetReduction) {
+                    // SUCCESSO
+                    feedback.className = 'feedback success';
+                    feedback.innerHTML = `
+                        🎉 <strong>OBIETTIVO RAGGIUNTO!</strong><br>
+                        <div style="margin: 15px 0;">
+                            <div style="display: inline-block; background: white; padding: 15px; border-radius: 10px; margin: 10px;">
+                                <strong>Costo Totale:</strong> ${totalCost}/100 punti<br>
+                                <strong>Riduzione Emissioni:</strong> ${emissions}% (target: ${this.targetReduction}%)
+                            </div>
+                        </div>
+                        ${choicesDetail}
+                        <strong style="color: #2E7D32;">La tua strategia rispetta gli Accordi di Parigi! 🌍</strong>
+                    `;
+                    this.showBadge('success', '🌍 Difensore del Clima', 
+                        'Complimenti! La tua strategia rispetta gli Accordi di Parigi!');
+                        
+                } else if (emissions >= -20) {
+                    // INSUFFICIENTE
+                    feedback.className = 'feedback error';
+                    feedback.innerHTML = `
+                        ❌ <strong>TROPPO LONTANO DALL'OBIETTIVO!</strong><br>
+                        <div style="margin: 15px 0;">
+                            <div style="display: inline-block; background: white; padding: 15px; border-radius: 10px; margin: 10px;">
+                                <strong>Costo Totale:</strong> ${totalCost}/100 punti<br>
+                                <strong>Riduzione Emissioni:</strong> ${emissions}% (target: ${this.targetReduction}%)
+                            </div>
+                        </div>
+                        ${choicesDetail}
+                        <strong style="color: #d32f2f;">Il pianeta ha bisogno di scelte più coraggiose! 🌍💔</strong><br>
+                        <em>Mancano ${Math.abs(this.targetReduction - emissions)}% per raggiungere Parigi.</em>
+                    `;
+                    this.showBadge('retry', '🎯 Riprova', 
+                        'Troppo lontano dall\'obiettivo! Scegli opzioni più sostenibili.');
+                        
+                } else {
+                    // PARZIALE
+                    feedback.className = 'feedback warning';
+                    feedback.innerHTML = `
+                        ⚠️ <strong>BUON INIZIO!</strong><br>
+                        <div style="margin: 15px 0;">
+                            <div style="display: inline-block; background: white; padding: 15px; border-radius: 10px; margin: 10px;">
+                                <strong>Costo Totale:</strong> ${totalCost}/100 punti<br>
+                                <strong>Riduzione Emissioni:</strong> ${emissions}% (target: ${this.targetReduction}%)
+                            </div>
+                        </div>
+                        ${choicesDetail}
+                        <strong style="color: #f57c00;">Sei sulla buona strada ma serve più ambizione! 🚀</strong><br>
+                        <em>Mancano solo ${Math.abs(this.targetReduction - emissions)}% per raggiungere Parigi.</em>
+                    `;
+                    this.showBadge('partial', '⚡ In Progress', 
+                        'Buon inizio! Prova a scegliere opzioni più sostenibili per raggiungere l\'obiettivo.');
+                }
+            }
+
+            showBadge(type, title, text) {
+                const badge = document.getElementById('badge');
+                const badgeTitle = document.getElementById('badgeTitle');
+                const badgeText = document.getElementById('badgeText');
+                
+                badgeTitle.textContent = title;
+                badgeText.textContent = text;
+                
+                // Cambia il colore del badge in base al tipo
+                if (type === 'success') {
+                    badge.style.background = 'linear-gradient(135deg, #4CAF50, #8BC34A)';
+                } else if (type === 'partial') {
+                    badge.style.background = 'linear-gradient(135deg, #FF9800, #FFB74D)';
+                } else {
+                    badge.style.background = 'linear-gradient(135deg, #f44336, #FF5722)';
+                }
+                
+                badge.classList.add('show');
+            }
+
+            showFeedback(type, title, message) {
+                const feedback = document.getElementById('feedback');
+                feedback.style.display = 'block';
+                feedback.className = `feedback ${type}`;
+                feedback.innerHTML = `<strong>${title}</strong><br>${message}`;
+            }
+
+            resetGame() {
+                // Reset variabili
+                this.budget = 100;
+                this.totalEmissions = 0;
+                this.selections = {};
+
+                // Reset UI
+                document.querySelectorAll('.option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+
+                document.getElementById('feedback').style.display = 'none';
+                document.getElementById('badge').classList.remove('show');
+                document.getElementById('suggestions').style.display = 'none';
+                document.getElementById('alertsContainer').innerHTML = '';
+
+                this.updateDashboard();
+            }
+        }
+
+        // Funzioni rimosse per compatibilità piattaforma
+        
+        // Inizializza il simulatore
+        document.addEventListener('DOMContentLoaded', () => {
+            new StrategySimulator();
+        });
+    </script>
+</body>
+</html>
